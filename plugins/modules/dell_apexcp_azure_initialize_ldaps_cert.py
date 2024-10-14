@@ -19,7 +19,7 @@ short_description: Initialize LDAPS certificate.
 version_added: "1.0.0"
 
 description:
-- This module will initialize LDAPS certificate before starting cluster deployment.
+- This module will initialize LDAPS certificate before starting LTP registration.
 options:
   cloud_platform_manager_ip:
     description:
@@ -87,24 +87,38 @@ def main():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
         cloud_platform_manager_ip=dict(required=True),
-        ldaps_cert_file=dict(required=True)
+        root_ldaps_cert_file=dict(required=True),
+        intermediate_cert_files=dict(required=False),
     )
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
     )
     LOGGER.info(f'The parameter is {json.dumps(module.params)}')
-    file = module.params.get('ldaps_cert_file')
+    intermediate_cert_files = module.params.get('intermediate_cert_files')
+    intermediate_cert_file_contents = []
+    if intermediate_cert_files:
+        intermediate_cert_files = intermediate_cert_files.split(",")
+        for f in intermediate_cert_files:
+            if os.path.isfile(f):
+                with open(f, encoding='utf_8') as fs:
+                    intermediate_cert_file_contents.append("".join(fs.readlines()))
+            else:
+                LOGGER.info(f'Intermediate certificate file {f} not exist.')
+                module.fail_json(msg=f"Intermediate certificate file {f} not found!")
+
+    file = module.params.get('root_ldaps_cert_file')
     if os.path.isfile(file):
         LOGGER.info('Initialize LDAPS certificate by using file %s', file)
         with open(file, encoding='utf_8') as f:
             ldaps_cert_content = "".join(f.readlines())
     else:
-        LOGGER.error('File cannot not be opened or does not exit, please verify and try again')
-        module.fail_json(msg="LDAPS certificate file not found!")
+        LOGGER.error('Root certificate file cannot not be opened or does not exit, please verify and try again')
+        module.fail_json(msg="Root certificate file not found!")
 
     LOGGER.info("----Initialize LDAPS certificate----")
-    response = auth_api_utils.InitializeLdapsCert(module, LOGGER).initialize_cert(ldaps_cert_content)
+    response = auth_api_utils.InitializeLdapsCert(module, LOGGER).initialize_cert(ldaps_cert_content,
+                                                                                  intermediate_cert_file_contents)
     LOGGER.info(f"----Result of initialize LDAPS certificate {response}-----")
     if response == "error":
         module.fail_json(

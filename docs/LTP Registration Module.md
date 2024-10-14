@@ -1,20 +1,20 @@
-System OS Provision Module for APEX Cloud Platform Azure
+LTP Registration Module for APEX Cloud Platform Azure
 =================
 ### Product Guide
 
-> © 2023 Dell Inc. or its subsidiaries. All rights reserved. Dell 
+> © 2024 Dell Inc. or its subsidiaries. All rights reserved. Dell 
 > EMC, and other trademarks are trademarks of Dell Inc. or its 
 > subsidiaries. Other trademarks may be trademarks of their respective owners. 
 
 Synopsis
 --------
-This module will install Azure Stack HCI OS on specified hosts.
+This module will register specified nodes to Azure portal.
   
 Supported Endpoints
 --------
 
-* POST /system/initialize?mode=OS_PROVISION
-* GET /system/initialize/status?mode=OS_PROVISION
+* POST /system/initialize?mode=LTP_REGISTRATION
+* GET /system/initialize/status?mode=LTP_REGISTRATION
 
 Parameters
 ----------
@@ -24,23 +24,6 @@ Parameters
         <th colspan="1">Parameter</th>
         <th>Choices/<font color="blue">Defaults</font></th>
                     <th width="100%">Comments</th>
-    </tr>
-    <tr>
-        <td colspan="1">
-            <div class="ansibleOptionAnchor" id="parameter-host_name"></div>
-            <b>primary_host_ip</b>
-            <a class="ansibleOptionLink" href="#parameter-host_name" title="Permalink to this option"></a>
-            <div style="font-size: small">
-                <span style="color: purple">type=string</span>
-                <br>
-                <span style="color: red">required=true</span>
-            </div>
-        </td>
-        <td></td>
-        <td>
-            <div></div>
-            <div>The primary node IP</div>
-        </td>
     </tr>
     <tr>
         <td colspan="1">
@@ -82,15 +65,14 @@ Parameters
 Notes
 -----
 - Make sure your APEX Cloud Platform Azure environment supports the API that you use
-- Details on execution of module dell_apexcp_azure_system_os_provision.py can be checked in the logs /tmp/apexcp_azure_system_os_provision.log
+- Details on execution of module dell_apexcp_azure_ltp_registration.py can be checked in the logs /tmp/apexcp_azure_ltp_registration.log
 
 Examples
 --------
 
 ``` yaml+jinja
-  - name: Install Azure Stack HCI OS on specified nodes
-    dell_apexcp_azure_system_os_provision:
-        primary_host_ip: "{{ primary_host_ip }}"
+  - name: Perform LTP registration for specified nodes
+    dell_apexcp_azure_ltp_registration:
         day1_json_file: "{{ day1_json_file }}"
         timeout: "{{ timeout }}"
 ```
@@ -121,11 +103,11 @@ The following are the fields unique to this module:
     <tr>
         <td colspan="2">
             <div class="ansibleOptionAnchor" id="return-install-status"></div>
-            <b>os_provision_result</b>
+            <b>ltp_registration_result</b>
             <a class="ansibleOptionLink" href="#return-install-status" title="Permalink to this return value"></a>
             <div style="font-size: small"><span style="color: purple">type=dict</span></div>
         </td>
-        <td>When calling the /system/initialize?mode=OS_PROVISION API is successful</td>
+        <td>When calling the /system/initialize?mode=LTP_REGISTRATION API is successful</td>
         <td><div></div><br/></td>
     </tr>
     <tr>
@@ -137,7 +119,7 @@ The following are the fields unique to this module:
             <div style="font-size: small"><span style="color: purple">type=string</span></div>
         </td>
         <td></td>
-        <td><div>The task ID of OS provision.</div></td>
+        <td><div>The task ID of LTP registration.</div></td>
     </tr>
     <tr>
         <td class="elbow-placeholder">&nbsp;</td>
@@ -148,19 +130,8 @@ The following are the fields unique to this module:
             <div style="font-size: small"><span style="color: purple">type=string</span></div>
         </td>
         <td></td>
-        <td><div>The OS provision result.</div></td>
+        <td><div>The LTP registration result(Completed/Failed).</div></td>
     </tr>        
-    <tr>
-        <td class="elbow-placeholder">&nbsp;</td>
-        <td colspan="1">
-            <div class="ansibleOptionAnchor" id="return-install-status/detail"></div>
-            <b>install_detail</b>
-            <a class="ansibleOptionLink" href="#return-install-status/detail" title="Permalink to this return value"></a>
-            <div style="font-size: small"><span style="color: purple">type=dict</span></div>
-        </td>
-        <td></td>
-        <td><div>The OS provision detail.</div></td>
-    </tr> 
     <tr>
         <td colspan="2">
             <div class="ansibleOptionAnchor" id="return-msg"></div>
@@ -169,7 +140,7 @@ The following are the fields unique to this module:
             <div style="font-size: small"><span style="color: purple">type=string</span></div>
         </td>
         <td>Always</td>
-        <td><div>The message for OS provision.</div></td>
+        <td><div>The message for LTP registration.</div></td>
     </tr>
 </table>
 

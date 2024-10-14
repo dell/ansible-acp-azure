@@ -14,7 +14,7 @@ This table provides information about the software prerequisites for the Ansible
 
 | **Ansible Modules** | **APEX Cloud Platform for Microsoft Azure version** | **Python version** | **Python library (ACP Ansible Azure Utility) version** | **Ansible Version** |
 |---------------------|-----------------------------------------------------|---------------|--------------------------------------------------------|---------------------|
-| v1.0.0 | 01.01.00.00 | 3.8 | 1.0.0 | 2.13 |
+| v1.1.0 | 01.03.00.00 | 3.8 | 1.1.0 | 2.13 |
 
 * Please follow Dell APEX Cloud Platform for Microsoft Azure Ansible Utility installation instructions on [Dell APEX Cloud Platform for Microsoft Azure Ansible Utility Documentation](https://github.com/dell/ansible-acp-azure-utility)
 
@@ -25,8 +25,8 @@ The modules are written in such a way that all requests are idempotent and hence
 * [Auto Discovery Hosts Module](./docs/Auto%20Discovery%20Hosts%20Module.md)
 * [System OS Provision Module](./docs/System%20OS%20Provision%20Module.md)
 * [Initialize LDAPS Certificate Module](./docs/Initialize%20LDAPs%20Certificate%20Module.md)
+* [LTP Registration Module](./docs/LTP%20Registration%20Module.md)
 * [Cluster Deployment Module](./docs/Cluster%20Deployment%20Module.md)
-* [System Initialize Full Module](./docs/System%20Initialize%20Full%20Module.md)
 
 ## Installation of SDK
 
@@ -36,7 +36,7 @@ Install the python sdk named ['Dell APEX Cloud Platform for Microsoft Azure Ansi
 
 * Download the tar build and install the collection anywhere in your system, e.g.
 
-      ansible-galaxy collection install dellemc-apexcp_azure-1.0.0.tar.gz -p <install_path>
+      ansible-galaxy collection install dellemc-apexcp_azure-1.1.0.tar.gz -p <install_path>
 
 * Set the environment variable:
 

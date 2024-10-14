@@ -40,7 +40,7 @@ author:
 '''
 
 EXAMPLES = r'''
-- name: Get Auto-discovered Nodes During Bootstrap 
+- name: Get Auto-discovered Nodes During Bootstrap
   dell_apexcp_azure_auto_discovery_hosts:
     primary_host_ip: "{{ primary_host_ip }}"
 '''
@@ -70,8 +70,10 @@ import ansible_acp_azure_utility
 # from plugins.module_utils import dell_apexcp_azure_ansible_utils as utils
 from ansible_collections.dellemc.apexcp_azure.plugins.module_utils import dell_apexcp_azure_ansible_utils as utils
 
+logger_file = "/tmp/apexcp_azure_auto_discovery_host.log"
+
 LOGGER = utils.get_logger(module_name="dell_apexcp_azure_auto_discovery_hosts",
-                          log_file_name="/tmp/apexcp_azure_auto_discovery_host.log")
+                          log_file_name=logger_file)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -83,7 +85,7 @@ class SystemInitialize(utils.BaseModule):
 
     def get_system_initialize_nodes(self):
         # create an instance of the API class
-        api_instance_for_primary_host = ansible_acp_azure_utility.InstallationAndDeploymentOfAPEXCloudPlatformForMicrosoftAzureApi(
+        api_instance_for_primary_host = ansible_acp_azure_utility.InstallationAndDeploymentOfTheAPEXCloudPlatformForMicrosoftAzureApi(
             ansible_acp_azure_utility.ApiClient(SystemInitialize.create_configuration(self.primary_host_ip)))
         self.api_version_string = self.get_versioned_response(api_instance_for_primary_host, 'Get /system/initialize/nodes')
         call_string = self.api_version_string + '_system_initialize_nodes_get'
@@ -137,15 +139,15 @@ def main():
 
     result = SystemInitialize().get_system_initialize_nodes()
     if result == 'error':
-      module.fail_json(
-          msg="API system/initialize/nodes call failed, Please see the /tmp/apexcp_azure_auto_discovery_host.log for more details")
+        module.fail_json(
+            msg=f"API system/initialize/nodes call failed, Please see the {logger_file} for more details")
     LOGGER.info("result: %s\n", result)
     if result:
         LOGGER.info("-----Initialize Nodes GET Successfully-----")
-        msg = 'System get auto-discovered nodes is successful. Please see the /tmp/apexcp_azure_auto_discovery_host.log for more details'
+        msg = f'Get auto-discovered nodes is successful. Please see the {logger_file} for more details'
     else:
         LOGGER.info("-----Initialize Nodes GET Failed-----")
-        msg = 'System get auto-discovered nodes failed. Please see the /tmp/apexcp_azure_auto_discovery_host.log for more details'
+        msg = f'Get auto-discovered nodes failed. Please see the {logger_file} for more details'
     az_facts = {'System_Initialize_Nodes_Information': result}
     az_facts_result = dict(changed=False, System_Initialize_Nodes_API=az_facts, msg=msg)
     module.exit_json(**az_facts_result)

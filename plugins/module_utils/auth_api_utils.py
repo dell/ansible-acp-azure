@@ -19,13 +19,18 @@ class InitializeLdapsCert(utils.BaseModule):
         self.logger = logger
         logger.info(f"{self.cloud_platform_manager_ip},{self.ldaps_cert_file}")
 
-    def initialize_cert(self, ldaps_cert_content):
+    def initialize_cert(self, ldaps_cert_content, intermediate_cert_file_contents):
         payload = [
             {
                 "cert_type": "ROOT",
-                "cert": f"{ldaps_cert_content}"
+                "cert": f"{ldaps_cert_content.strip()}"
             }
         ]
+        for c in intermediate_cert_file_contents:
+            payload.append({
+                "cert_type": "INTERMEDIATE",
+                "cert": f"{c.strip()}"
+            })
         # create an instance of the API class
         api_instance = ansible_acp_azure_utility.AuthenticationOfAPEXCloudPlatformManagerApi(
             ansible_acp_azure_utility.ApiClient(InitializeLdapsCert.create_configuration(self.cloud_platform_manager_ip)))
