@@ -41,7 +41,7 @@ Parameters
     <tr>
         <td colspan="1">
             <div class="ansibleOptionAnchor" id="parameter-ldaps-cert-file"></div>
-            <b>ldaps_cert_file</b>
+            <b>root_ldaps_cert_file</b>
             <a class="ansibleOptionLink" href="#parameter-ldaps-cert-file" title="Permalink to this option"></a>
             <div style="font-size: small">
                 <span style="color: purple">type=string</span>
@@ -52,9 +52,30 @@ Parameters
         <td></td>
         <td>
             <div></div>
-            <div>The path of LDAPs certificate file</div>
+            <div>The path of root LDAPs certificate file</div>
         </td>
     </tr>
+    <tr>
+        <td colspan="1">
+            <div class="ansibleOptionAnchor" id="parameter-ldaps-cert-file"></div>
+            <b>intermediate_cert_files</b>
+            <a class="ansibleOptionLink" href="#parameter-ldaps-cert-file" title="Permalink to this option"></a>
+            <div style="font-size: small">
+                <span style="color: purple">type=string</span>
+                <br>
+                <span style="color: red">required=false</span>
+            </div>
+        </td>
+        <td></td>
+        <td>
+            <div></div>
+            <div>The path of intermediate LDAPs certificate files<br>
+                If there are multiple intermediate LDAPs certificate files, separate them with comma.<br>
+                If there is no intermediate LDAPs certificate file, leave it blank.
+            </div>
+        </td>
+    </tr>
+
 </table>
 
 Notes
@@ -69,7 +90,8 @@ Examples
   - name: Initialize LDAPs certificate
     dell_apexcp_azure_initialize_ldaps_cert:
         cloud_platform_manager_ip: "{{ cloud_platform_manager_ip }}"
-        ldaps_cert_file: "{{ ldaps_cert_file }}"
+        root_ldaps_cert_file: "{{ ldaps_cert_file }}"
+        intermediate_cert_files: "{{ intermediate_cert_files }}"
 ```
 
 Return Values

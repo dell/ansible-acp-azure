@@ -8,7 +8,7 @@ namespace: dellemc
 name: apexcp_azure
 
 # The version of the collection. Must be compatible with semantic versioning
-version: 1.0.0
+version: 1.1.0
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md
@@ -16,7 +16,7 @@ readme: README.md
 # A list of the collection's content authors. Can be just the name or in the format 'Full Name <email> (url)
 # @nicks:irc/im.site#channel'
 authors:
-- Dell APEX Cloud Platform for Microsoft Azure Ansible Development Team <ansible.team@dell.com>
+  - Dell APEX Cloud Platform for Microsoft Azure Ansible Development Team <ansible.team@dell.com>
 
 
 ### OPTIONAL but strongly recommended
@@ -25,7 +25,8 @@ description: Dell APEX Cloud Platform for Microsoft Azure Ansible Modules
 
 # Either a single license or a list of licenses for content inside of a collection. Ansible Galaxy currently only
 # accepts L(SPDX,https://spdx.org/licenses/) licenses. This key is mutually exclusive with 'license_file'
-license: Apache-2.0
+license:
+  - Apache-2.0
 
 # The path to the license file for the collection. This path is relative to the root of the collection. This key is
 # mutually exclusive with 'license'

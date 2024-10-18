@@ -8,13 +8,12 @@ Cluster Deployment Module for APEX Cloud Platform Azure
 
 Synopsis
 --------
-This module will initialize LDAPS certificate, configure and deploy a new APEX Cloud Platform 
+This module will configure and deploy a new APEX Cloud Platform 
 cluster for Microsoft Azure based on the provided day1 json file.
   
 Supported Endpoints
 --------
 
-* POST /ldaps-certs/initialize
 * POST /system/initialize?mode=CLUSTER_DEPLOYMENT
 * GET /system/initialize/status?mode=CLUSTER_DEPLOYMENT  
 
@@ -26,23 +25,6 @@ Parameters
         <th colspan="1">Parameter</th>
         <th>Choices/<font color="blue">Defaults</font></th>
                     <th width="100%">Comments</th>
-    </tr>
-    <tr>
-        <td colspan="1">
-            <div class="ansibleOptionAnchor" id="parameter-cloud-platform-manager-ip"></div>
-            <b>cloud_platform_manager_ip</b>
-            <a class="ansibleOptionLink" href="#parameter-cloud-platform-manager-ip" title="Permalink to this option"></a>
-            <div style="font-size: small">
-                <span style="color: purple">type=string</span>
-                <br>
-                <span style="color: red">required=true</span>                    
-            </div>
-        </td>
-        <td></td>
-        <td>
-            <div></div>
-            <div>The ip address of APEX Cloud Platform Manager</div>
-        </td>
     </tr>
     <tr>
         <td colspan="1">
@@ -59,23 +41,6 @@ Parameters
         <td>
             <div></div>
             <div>The path of day1 json file</div>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="1">
-            <div class="ansibleOptionAnchor" id="parameter-ldaps-cert-file"></div>
-            <b>ldaps_cert_file</b>
-            <a class="ansibleOptionLink" href="#parameter-ldaps-cert-file" title="Permalink to this option"></a>
-            <div style="font-size: small">
-                <span style="color: purple">type=string</span>
-                <br>
-                <span style="color: red">required=true</span>
-            </div>
-        </td>
-        <td></td>
-        <td>
-            <div></div>
-            <div>The path of LDAPs certificate file</div>
         </td>
     </tr>
     <tr>
@@ -115,9 +80,7 @@ Examples
 ``` yaml+jinja
   - name: Configure and deploy a new APEX Cloud Platform cluster for Azure
     dell_apexcp_azure_cluster_deployment:
-        cloud_platform_manager_ip: "{{ cloud_platform_manager_ip }}"
         day1_json_file: "{{ day1_json_file }}"
-        ldaps_cert_file: "{{ ldaps_cert_file }}"
         timeout: "{{ timeout }}"
 ```
 

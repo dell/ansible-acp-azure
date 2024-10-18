@@ -52,7 +52,7 @@ author:
 
 EXAMPLES = r'''
 - name: OS Provision
-  dell_apexcp_azure_system_os_provision
+  dell_apexcp_azure_system_os_provision:
     primary_host_ip: "{{ primary_host_ip }}"
     cloud_platform_manager_ip: "{{ cloud_platform_manager_ip }}"
     day1_json_file: "{{ day1_json_file }}"
@@ -85,9 +85,9 @@ msg:
 
 import urllib3
 from ansible.module_utils.basic import AnsibleModule
-import json
-import os
-# from plugins.module_utils import dellemc_apexcp_azure_ansible_utils as utils
+
+# from plugins.module_utils import dell_apexcp_azure_ansible_utils as utils
+# from plugins.module_utils import install_and_deployment_utils
 from ansible_collections.dellemc.apexcp_azure.plugins.module_utils import dell_apexcp_azure_ansible_utils as utils
 from ansible_collections.dellemc.apexcp_azure.plugins.module_utils import install_and_deployment_utils
 
@@ -107,7 +107,7 @@ def main():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
         primary_host_ip=dict(required=True),
-        cloud_platform_manager_ip=dict(required=True),
+        cloud_platform_manager_ip=dict(required=False),
         day1_json_file=dict(required=True),
         timeout=dict(type='int', default=MAX_CHECK_COUNT * CHECK_STATUS_INTERVAL)
     )
@@ -115,31 +115,32 @@ def main():
         argument_spec=module_args,
         supports_check_mode=True,
     )
-    LOGGER.info(f'The parameter is {json.dumps(module.params)}')
-    file = module.params.get('day1_json_file')
-    if os.path.isfile(file):
-        LOGGER.info('HCI OS installation using JSON file %s', module.params.get('day1_json_file'))
-        with open(file, encoding='utf_8') as f:
-            config_json = json.load(f)
-    else:
-        LOGGER.error('File cannot not be opened or does not exit, please verify and try again')
-        module.fail_json(msg="JSON file not found!")
+    os_provision_task = install_and_deployment_utils.SystemInitializeTask(module, logger=LOGGER,
+                                                                          mode=install_and_deployment_utils.MODE_OS_PROVISION)
+    os_provision_task.validate_input(module)
+    current_status = os_provision_task.check_current_status()
+    request_id = None
+    if current_status == "COMPLETED":
+        LOGGER.info("The OS provision completed,exit")
+        os_provision_result = {'status': current_status}
+        facts_result = dict(changed=False, os_provision_result=os_provision_result,
+                            msg=f"The OS provision completed. Please see the {log_file_name} for more details")
+        module.exit_json(**facts_result)
+    elif current_status in ("NOT_STARTED", "FAILED"):
+        LOGGER.info("OS provision start")
+        request_id = os_provision_task.start()
+        LOGGER.info('OS provision task ID: %s.', request_id)
+        if request_id == "error":
+            LOGGER.info("OS provision startup failed-----")
+            module.fail_json(
+                msg=f"OS provision startup failed. Please see the {log_file_name} for more details")
 
-    os_provision_utility = install_and_deployment_utils.OSProvision(module, LOGGER, timeout=7200)
-    LOGGER.info("----Install GI----")
-    installation_request_id = os_provision_utility.start_os_provision(config_json)
-    if installation_request_id == "error":
-        LOGGER.info("------HCI OS installation task startup Failed-----")
-        module.fail_json(
-            msg=f"HCI OS installation task startup Failed. Please see the {log_file_name} for more details")
-
-    LOGGER.info('HCI OS Initialization: task ID: %s.', installation_request_id)
-    os_provision_status, install_detail = os_provision_utility.check_os_provision_status()
+    os_provision_status, install_detail = os_provision_task.check_os_provision_status()
 
     os_provision_result = {'status': os_provision_status,
-                              'request_id': installation_request_id,
-                              'install_detail': install_detail
-                              }
+                           'request_id': request_id,
+                           'install_detail': install_detail
+                           }
     if os_provision_status == 'COMPLETED':
         LOGGER.info("-----HCI OS provision Completed-----")
         msg = f'HCI OS installation is successful. Please see the {log_file_name}  for more details'
